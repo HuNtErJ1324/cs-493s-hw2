@@ -44,7 +44,7 @@ For another sanity check, mask the loss on the first 3 tokens.
 In this section, you will reproduce experiments for grokking¹ in transformers. For this, you will train a small transformer model for 3 tasks - modular addition, modular subtraction and modular division.
 
 ### 2.1 Data Generation
-You need to generate data of the form "a+b=c mod p", "a-b=c mod p" and "a/b=c mod p", where a, b are natural numbers. From the original paper, 0 ≤ a, b ≤ p, with p = 97, 113. Ensure that you have proper train, test and val splits.
+You need to generate data of the form "a+b=c mod p", "a-b=c mod p" and "a/b=c mod p", where a, b are natural numbers. From the original paper, 0 ≤ a, b ≤ p, with p = 97 and p=113. Ideally, your data should look like  "a o b = c" where a,b and c are natural numbers and o is the operator. Ensure that you have proper train, test and val splits.
 
 **Deliverables** Generated train/test splits. Include description of the process and the number of datapoints used for each split.
 
