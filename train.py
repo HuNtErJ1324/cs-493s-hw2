@@ -45,7 +45,7 @@ def validate(model,val_data):
             batch = batch.to(device)
             mask = mask.to(device)
             pred_logits = model(batch,attn_mask=mask)
-            loss_per_token = F.cross_entropy(pred_logits.flatten(end_dim=1),batch.view(-1),reduction='mean')
+            loss_per_token = F.cross_entropy(pred_logits.flatten(end_dim=1),batch.view(-1),reduction='none')
             loss = (loss_per_token * mask.view(-1)).sum() / mask.sum()
             losses.append(loss.item())
             pbar.set_postfix(loss=loss.item())
