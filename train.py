@@ -77,8 +77,8 @@ def train_one_epoch(model, data, optimizer, config, val_data=None):
 
         if config.eval_every and (i + 1) % config.eval_every == 0:
             val_result = validate(model, val_data, config)
-            val_losses.append(val_result[0])
-            val_acc.append(val_result[1])
+            val_losses.append(np.mean(val_result[0]))
+            val_acc.append(np.mean(val_result[1]))
 
     if config.eval_every:
         return losses, acc, val_losses, val_acc
@@ -147,7 +147,7 @@ def train_model(model, train_data, val_data, config, optimizer):
             "Mean Val Accuracy",
             sum(val_acc[-1]) / len(val_acc[-1]),
         )
-    return epoch_loss, val_loss
+    return epoch_loss, epoch_acc, val_loss, val_acc
 
 
 def test_model(model, test_data, config):

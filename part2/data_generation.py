@@ -11,8 +11,8 @@ from sklearn.model_selection import train_test_split
 
 # Step 1: Create numpy arrays, each containing values for a column
 rng = np.random.default_rng(101)
-base_97 = np.repeat(rng.integers(1_000_000, size=98), 98)
-base_113 = np.repeat(rng.integers(1_000_000, size=114), 114)
+base_97 = np.repeat(rng.integers(100_000, size=98), 98)
+base_113 = np.repeat(rng.integers(100_000, size=114), 114)
 p = np.concatenate((np.repeat(97, 98 * 98 * 3), np.repeat(113, 114 * 114 * 3)))
 a = np.concatenate(
     (
