@@ -5,7 +5,7 @@ import argparse
 import random
 
 # Import train_abl.py
-import train_abl
+import train_abl as train
 
 def set_seed(seed: int = 42):
     random.seed(seed)
@@ -38,7 +38,7 @@ for i in range(1, 4+1):
     "weight_decay": "1",
     "batch_size": "512",
     "eval_every": "2000",
-    "num_steps": "500000"
+    "num_steps": "1000000"
   }
 
   opt_map = {1: "adam", 2: "adamw", 3: "adagrad", 4: "rmsprop"}
@@ -57,64 +57,12 @@ for i in range(1, 4+1):
 
   # Training
   print("Train started")
-  model = gpt
-  train_data = train_loader
-  val_data = val_loader
-  epoch_loss = []
-  epoch_acc = []
-  val_loss = []
-  val_acc = []
-  for epoch in range(config.epochs):
-    if config.num_steps > 0:
-        epoch_result = train.train_one_epoch(
-            model,
-            train_data,
-            optimizer,
-            scheduler,
-            config,
-            val_data=val_data,
-            silent=True
-        )
-        epoch_loss.append(epoch_result[0])
-        epoch_acc.append(epoch_result[1])
-        val_loss.append(epoch_result[2])
-        val_acc.append(epoch_result[3])
-    else:
-        epoch_result = train.train_one_epoch(
-                  model,
-                  train_data,
-                  optimizer,
-                  scheduler,
-                  config,
-                  val_data=val_data,
-                  silent=True
-              )
-        epoch_loss.append(epoch_result[0])
-        epoch_acc.append(epoch_result[1])
-        val_result = train.validate(model, val_data, config)
-        val_loss.append(val_result[0])
-        val_acc.append(val_result[1])
-    print()
-    print(
-        "Epoch:",
-        epoch,
-        " Mean Train Loss: ",
-        sum(epoch_loss[-1]) / len(epoch_loss[-1]),
-        " Mean Train Accuracy ",
-        sum(epoch_acc[-1]) / len(epoch_acc[-1]),
-        "Mean Val Loss: ",
-        sum(val_loss[-1]) / len(val_loss[-1]),
-        "Mean Val Accuracy",
-        sum(val_acc[-1]) / len(val_acc[-1]),
-    )
+  train_losses, train_acc, val_losses, val_acc = train.train_model(gpt, train_loader,
+          optimizer, scheduler, config, val_loader, silent=True)
   print("Train done")
-  train_losses = epoch_loss
-  train_acc = epoch_acc
-  val_losses = val_loss
-  val_acc = val_acc
 
   # Testing
-  train.test_model(gpt, test_loader, config)
+  test_losses, test_acc = train.test_model(gpt, test_loader, config)
 
   # Save trained model,configs and losses
   with open(f"{grok_dir}/{config.exp_name}_config_opt{run_opt}.json", "w") as f:
@@ -129,3 +77,5 @@ for i in range(1, 4+1):
   np.save(f"{grok_dir}/grok_train_acc_opt{run_opt}", train_acc[0])
   np.save(f"{grok_dir}/grok_val_losses_opt{run_opt}", val_losses)
   np.save(f"{grok_dir}/grok_val_acc_opt{run_opt}", val_acc)
+  np.save(f"{grok_dir}/grok_test_losses_opt{run_opt}", test_losses)
+  np.save(f"{grok_dir}/grok_test_acc_opt{run_opt}", test_acc)
