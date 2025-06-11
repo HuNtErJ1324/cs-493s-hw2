@@ -2,7 +2,35 @@
 ## CSE 493S/599S: Advanced Machine Learning
 ### Prof. Sewoong Oh
 **Due: Tuesday, June 10th at 11:59pm**
+### Authors: Justin Chae, Thomas Lilly, Johan Lindqvist, Yehchan Yoo
 
+
+## Running this submission
+
+### Grokking (2.3)
+
+To train a model which reproduces the plots from subplot (a) in the report, run
+```
+$ python grok.py
+```
+This command will output a json configuration file `grok.json` which describes the parameters of the training run and a `grok.pth` file which can be loaded for inference in `inference.py`. The report has more detailed instructions for `inference.py`. It is designed as a command line utility so you can use the `--help` option for more details. 
+
+Example inference command
+```
+$ python inference.py --use_mod_dataset --seed_file /path/to/grok.pth \
+                        --out_file /path/to/out_file.txt
+```
+
+
+
+
+
+
+
+
+
+
+---
 ## Instructions
 - Please submit this homework to Gradescope.
 - Submit the code, as well as a report containing the plots and discussion. Also include a README, along with instructions to run your code.
