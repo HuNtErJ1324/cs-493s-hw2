@@ -1,7 +1,7 @@
 # Homework #2
 ## CSE 493S/599S: Advanced Machine Learning
 ### Prof. Sewoong Oh
-**Due: Tuesday, June 10th at 11:59pm**
+**Due: Wednesday, June 11th at 11:59pm**
 ### Authors: Justin Chae, Thomas Lilly, Johan Lindqvist, Yehchan Yoo
 
 
@@ -35,14 +35,16 @@ $ python inference.py --model_name /path/to/grok.pth \
                       
 ```
 
+### Ablation (2.4)
 
+To replicate the ablation study we did, run
+```
+$ python ablations.py
+```
 
+Similar to `grok.py`, this command will output for each optimizer method a `json` configuration file, a `pth` file for inference, and `npy` files with the validation and train errors and losses. All output files are in  the `ablation` directory.
 
-
-
-
-
-
+In addition to the output files, there are also plots in `.png` file format generated to summarize the results using the code contained in `visualization_notebook.ipynb`. 
 
 ---
 ## Instructions
