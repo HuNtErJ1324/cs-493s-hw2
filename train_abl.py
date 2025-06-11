@@ -118,6 +118,16 @@ def train_model(model, train_data, optimizer, scheduler,
     epoch_acc = []
     val_loss = []
     val_acc = []
+    
+    # Add variables to track grokking
+    train_error_vanished = False
+    train_vanish_step = 0
+    test_error_zero_step = 0
+    train_acc_threshold = 0.99  # 99% training accuracy threshold
+    test_acc_threshold = 0.99   # 99% test accuracy threshold
+    total_steps = 0
+    grokking_detected = False
+    
     for epoch in range(config.epochs):
         if config.num_steps > 0:
             epoch_result = train_one_epoch(
@@ -133,6 +143,25 @@ def train_model(model, train_data, optimizer, scheduler,
             epoch_acc.append(epoch_result[1])
             val_loss.append(epoch_result[2])
             val_acc.append(epoch_result[3])
+            
+            # Check for grokking in steps where validation was performed
+            for i, (step_train_acc, step_val_acc) in enumerate(zip(epoch_result[1], epoch_result[3])):
+                step_idx = i * config.eval_every
+                total_steps = epoch * len(train_data) + step_idx
+                
+                # Check if train error has vanished
+                if not train_error_vanished and step_train_acc >= train_acc_threshold:
+                    train_error_vanished = True
+                    train_vanish_step = total_steps
+                    print(f"\nTrain error vanished at step {train_vanish_step} (acc={step_train_acc:.4f})")
+                
+                # Check if test error reached zero after train error vanished
+                if train_error_vanished and not grokking_detected and step_val_acc >= test_acc_threshold:
+                    test_error_zero_step = total_steps
+                    grokking_steps = test_error_zero_step - train_vanish_step
+                    grokking_detected = True
+                    print(f"\nGROKKING DETECTED: Test error reached {step_val_acc:.4f} at step {test_error_zero_step}")
+                    print(f"Steps between train error vanishing and test error zero: {grokking_steps}")
         else:
             epoch_result = train_one_epoch(
                 model,
@@ -148,6 +177,26 @@ def train_model(model, train_data, optimizer, scheduler,
             val_result = validate(model, val_data, config)
             val_loss.append(val_result[0])
             val_acc.append(val_result[1])
+            
+            # Update total steps
+            total_steps = (epoch + 1) * len(train_data)
+            
+            # Check for grokking at epoch level
+            epoch_train_acc = sum(epoch_acc[-1]) / len(epoch_acc[-1])
+            epoch_val_acc = sum(val_acc[-1]) / len(val_acc[-1])
+            
+            if not train_error_vanished and epoch_train_acc >= train_acc_threshold:
+                train_error_vanished = True
+                train_vanish_step = total_steps
+                print(f"\nTrain error vanished at step {train_vanish_step} (acc={epoch_train_acc:.4f})")
+            
+            if train_error_vanished and not grokking_detected and epoch_val_acc >= test_acc_threshold:
+                test_error_zero_step = total_steps
+                grokking_steps = test_error_zero_step - train_vanish_step
+                grokking_detected = True
+                print(f"\nGROKKING DETECTED: Test error reached {epoch_val_acc:.4f} at step {test_error_zero_step}")
+                print(f"Steps between train error vanishing and test error zero: {grokking_steps}")
+        
         print()
         print(
             "Epoch:",
@@ -161,7 +210,28 @@ def train_model(model, train_data, optimizer, scheduler,
             "Mean Val Accuracy",
             sum(val_acc[-1]) / len(val_acc[-1]),
         )
-    return epoch_loss, epoch_acc, val_loss, val_acc
+    
+    # Final grokking statistics after training
+    grokking_stats = {
+        "train_error_vanished": train_error_vanished,
+        "train_vanish_step": train_vanish_step,
+        "test_error_zero": grokking_detected,
+        "test_error_zero_step": test_error_zero_step,
+        "grokking_steps": test_error_zero_step - train_vanish_step if grokking_detected else -1,
+    }
+    
+    print("\n=== GROKKING STATISTICS ===")
+    print(f"Train error vanished: {train_error_vanished}")
+    if train_error_vanished:
+        print(f"  at step: {train_vanish_step}")
+        print(f"Test error reached threshold: {grokking_detected}")
+        if grokking_detected:
+            print(f"  at step: {test_error_zero_step}")
+            print(f"Grokking steps: {grokking_stats['grokking_steps']}")
+        else:
+            print("  No grokking detected within training period")
+    
+    return epoch_loss, epoch_acc, val_loss, val_acc, grokking_stats
 
 
 def test_model(model, test_data, config):
@@ -358,22 +428,32 @@ def __main__(args: list = None) -> None:
     print("GPT built")
     # Train loop
     print("Train started")
-    train_losses, val_losses = train_model(
-        gpt, train_loader, val_loader, config, optimizer, scheduler
+    train_losses, train_acc, val_losses, val_acc, grokking_stats = train_model(
+        gpt, train_loader, optimizer, scheduler,
+        config, val_loader, silent=False
     )
     print("Train done")
 
     # Testing
-    test_model(gpt, test_loader)
+    test_losses, test_acc = test_model(gpt, test_loader, config)
+    print("Test done")
 
-    # Save trained model,configs and losses
+    # Save trained model, configs, losses and grokking statistics
     with open(config.exp_name + "_config.json", "w") as f:
         json.dump(vars(config), f, indent=4)
 
     torch.save(gpt.state_dict(), config.exp_name + ".pth")
 
-    with open(config.exp_name + "_losses.json", "w") as f:
-        json.dump({"train_losses": train_losses, "val_losses": val_losses}, f)
+    with open(config.exp_name + "_results.json", "w") as f:
+        json.dump({
+            "train_losses": train_losses, 
+            "train_acc": train_acc,
+            "val_losses": val_losses, 
+            "val_acc": val_acc,
+            "test_losses": sum(test_losses) / len(test_losses) if test_losses else None,
+            "test_acc": sum(test_acc) / len(test_acc) if test_acc else None,
+            "grokking_stats": grokking_stats
+        }, f)
 
 
 if __name__ == "__main__":
