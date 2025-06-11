@@ -48,7 +48,8 @@ def build_causal_pad_mask(mask: torch.Tensor) -> torch.Tensor:
     return combined_mask  # 1 for allowed attention, 0 for blocked
 
 
-def train_one_epoch(model, data, optimizer, scheduler, config, val_data=None):
+def train_one_epoch(model, data, optimizer, scheduler, 
+    config, val_data=None, silent=False):
     losses = []
     acc = []
     val_losses = []
@@ -77,7 +78,7 @@ def train_one_epoch(model, data, optimizer, scheduler, config, val_data=None):
         pbar.set_postfix(loss=losses[-1], acc=acc[-1])
 
         if config.eval_every and (i + 1) % config.eval_every == 0:
-            val_result = validate(model, val_data, config)
+            val_result = validate(model, val_data, config, silent)
             val_losses.append(np.mean(val_result[0]))
             val_acc.append(np.mean(val_result[1]))
 
@@ -87,12 +88,12 @@ def train_one_epoch(model, data, optimizer, scheduler, config, val_data=None):
     return losses, acc
 
 
-def validate(model, val_data, config):
+def validate(model, val_data, config, silent=False):
     losses = []
     acc = []
     model.eval()
 
-    pbar = tqdm(val_data, desc="Validation")
+    pbar = val_data if silent else tqdm(val_data, desc="Validation")
     device = next(model.parameters()).device
     with torch.no_grad():
         for batch, mask, lab, lab_mask in pbar:
@@ -106,11 +107,13 @@ def validate(model, val_data, config):
             losses.append(loss.item())
             acc.append(compute_accuracy(lab, lab_mask, pred_logits).item())
 
-            pbar.set_postfix(loss=losses[-1], acc=acc[-1])
+            if not silent:
+                pbar.set_postfix(loss=losses[-1], acc=acc[-1])
     return losses, acc
 
 
-def train_model(model, train_data, val_data, config, optimizer, scheduler):
+def train_model(model, train_data, optimizer, scheduler,
+    config, val_data, silent=False):
     epoch_loss = []
     epoch_acc = []
     val_loss = []
@@ -124,6 +127,7 @@ def train_model(model, train_data, val_data, config, optimizer, scheduler):
                 scheduler,
                 config,
                 val_data=val_data,
+                silent=silent
             )
             epoch_loss.append(epoch_result[0])
             epoch_acc.append(epoch_result[1])
@@ -137,6 +141,7 @@ def train_model(model, train_data, val_data, config, optimizer, scheduler):
                 scheduler,
                 config,
                 val_data=val_data,
+                silent=silent
             )
             epoch_loss.append(epoch_result[0])
             epoch_acc.append(epoch_result[1])
