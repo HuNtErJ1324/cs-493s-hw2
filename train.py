@@ -125,8 +125,8 @@ def train_model(model, train_data, val_data, config, optimizer):
             )
             epoch_loss.append(epoch_result[0])
             epoch_acc.append(epoch_result[1])
-            val_loss.extend(epoch_result[2])
-            val_acc.extend(epoch_result[3])
+            val_loss.append(epoch_result[2])
+            val_acc.append(epoch_result[3])
         else:
             epoch_result = train_one_epoch(model, train_data, optimizer)
             epoch_loss.append(epoch_result[0])

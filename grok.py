@@ -20,7 +20,7 @@ def set_seed(seed: int = 42):
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--run_opt", type=int, choices=[1, 2, 3], default=1)
-config = parser.parse_args()
+cfg = parser.parse_args()
 
 grok_dir = "grokking"
 
@@ -43,13 +43,13 @@ args = {
     "num_steps": "1_000_000",
 }
 
-if config.run_opt == 1:
+if cfg.run_opt == 1:
     args["weight_decay"] = "1"
-elif config.run_opt == 2:
+elif cfg.run_opt == 2:
     args["n_layer"] = "1"
     args["n_head"] = "2"
     args["n_embd"] = "64"
-elif config.run_opt == 3:
+elif cfg.run_opt == 3:
     args["weight_decay"] = "1"
     args["n_layer"] = "1"
     args["n_head"] = "2"
@@ -76,16 +76,16 @@ print("Train done")
 train.test_model(gpt, test_loader, config)
 
 # Save trained model,configs and losses
-with open(f"{grok_dir}/{config.exp_name}_config_opt{config.run_opt}.json", "w") as f:
+with open(f"{grok_dir}/{config.exp_name}_config_opt{cfg.run_opt}.json", "w") as f:
     json.dump(vars(config), f, indent=4)
 
-torch.save(gpt.state_dict(), f"{grok_dir}/{config.exp_name}_opt{config.run_opt}.pth")
+torch.save(gpt.state_dict(), f"{grok_dir}/{config.exp_name}_opt{cfg.run_opt}.pth")
 
-with open(f"{grok_dir}/{config.exp_name}_losses_opt{config.run_opt}.json", "w") as f:
+with open(f"{grok_dir}/{config.exp_name}_losses_opt{cfg.run_opt}.json", "w") as f:
     json.dump({"train_losses": train_losses[0], "val_losses": val_losses}, f)
 
 
-np.save(f"{grok_dir}/grok_train_losses_opt{config.run_opt}", train_losses[0])
-np.save(f"{grok_dir}/grok_train_acc_opt{config.run_opt}", train_acc[0])
-np.save(f"{grok_dir}/grok_val_losses_opt{config.run_opt}", val_losses)
-np.save(f"{grok_dir}/grok_val_acc_opt{config.run_opt}", val_acc)
+np.save(f"{grok_dir}/grok_train_losses_opt{cfg.run_opt}", train_losses[0])
+np.save(f"{grok_dir}/grok_train_acc_opt{cfg.run_opt}", train_acc[0])
+np.save(f"{grok_dir}/grok_val_losses_opt{cfg.run_opt}", val_losses[0])
+np.save(f"{grok_dir}/grok_val_acc_opt{cfg.run_opt}", val_acc[0])
