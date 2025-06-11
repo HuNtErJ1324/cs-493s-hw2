@@ -300,15 +300,8 @@ def load_dataset(config: argparse.Namespace) -> None:
 def gen_gpt(config: argparse.Namespace):
     gpt_config = build_gpt_config(config)
     gpt = GPT(gpt_config)
-    """
-    optimizer = gpt.configure_optimizers(
-        config.weight_decay,
-        config.learning_rate,
-        betas=(config.beta1, config.beta2),
-        device_type=config.device,
-    )
-    """
-    # New optimizer settings
+    gpt.to(config.device)
+    print(f"Using device: {next(gpt.parameters()).device}")
     if config.optim == "adam":
         optimizer = torch.optim.Adam(
             gpt.parameters(),
