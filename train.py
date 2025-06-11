@@ -299,22 +299,28 @@ def __main__(args: list = None) -> None:
     print("GPT built")
     # Train loop
     print("Train started")
-    train_losses, val_losses = train_model(
+    train_losses, train_acc, val_losses, val_acc = train_model(
         gpt, train_loader, val_loader, config, optimizer
     )
     print("Train done")
 
     # Testing
-    test_model(gpt, test_loader)
+    test_losses, test_acc = test_model(gpt, test_loader)
 
     # Save trained model,configs and losses
     with open(config.exp_name + "_config.json", "w") as f:
         json.dump(vars(config), f, indent=4)
 
     torch.save(gpt.state_dict(), config.exp_name + ".pth")
-
-    with open(config.exp_name + "_losses.json", "w") as f:
-        json.dump({"train_losses": train_losses, "val_losses": val_losses}, f)
+    with open(config.exp_name + "_results.json", "w") as f:
+        json.dump({
+            "train_losses": train_losses, 
+            "train_acc": train_acc,
+            "val_losses": val_losses, 
+            "val_acc": val_acc,
+            "test_losses": sum(test_losses) / len(test_losses) if test_losses else None,
+            "test_acc": sum(test_acc) / len(test_acc) if test_acc else None,
+        }, f)
 
 
 if __name__ == "__main__":
