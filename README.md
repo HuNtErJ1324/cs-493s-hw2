@@ -7,6 +7,19 @@
 
 ## Running this submission
 
+### Training (1.1)
+
+The model can be trained with `python train.py`. The default call creates and trains a model on the mod dataset from part 2 using the default nanoGPT configs. The file itself has a large number of different parameters which may be set to customize the training. Running the command with the flag `-h` produces a output with more information about the arguments. 
+
+### Inference (1.2)
+
+Inference can be run with the command `python inference.py`. The default call prints the sampled sentences directly to the terminal using the mod dataset and the model created by the training command. This command also supports the `-h` flag, for information about the parameters for the inference. 
+
+
+### Sanity Check (1.5)
+
+The sanity check is located in the sanity_checks.ipynb notebook.
+
 ### Grokking (2.3)
 
 To train a model which reproduces the plots from subplot (a) in the report, run
@@ -17,8 +30,9 @@ This command will output a json configuration file `grok.json` which describes t
 
 Example inference command
 ```
-$ python inference.py --use_mod_dataset --seed_file /path/to/grok.pth \
-                        --out_file /path/to/out_file.txt
+$ python inference.py --model_name /path/to/grok.pth \
+                      --out_file /path/to/out_file.txt
+                      
 ```
 
 
