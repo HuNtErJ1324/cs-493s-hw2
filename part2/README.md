@@ -15,12 +15,10 @@ The DataFrame first constructed all possible combinations of values from the fol
  
 From here, the resulting value from operation a o b (mod p) was calculated for each combination and added to column `c`.
 
-In addition, rows that involved divison by zero were removed at the end, and all the columns were converted to string format for use with the Transformer model.
+In addition, rows that involved division by zero were removed at the end, and all the columns were converted to string format for use with the Transformer model.
 
 The combination construction and all the calculations were done fastly and efficiently using NumPy.
 
 After the data was generated, Scikit-Learn's `train_test_split()` function was used to generate train, test, and validation sets from the data. The data was given a 50%-25%-25% train-test-validation split by splitting the dataset into two, using one half as the training set, and splitting the other half again into two halves to form the test and validation sets.
-
-The generated dataset had 67,588 rows with the training set having 33,794 rows. The other 33,794 rows were split into the test set (having 16,897 rows) and the validation set (having 16,897 rows).
 
 The generated dataset, the training set, the test set, and the validation set were all published as csv files -- `data.csv`, `data_train.csv`, `data_test.csv`, and `data_val.csv`, respectively.
