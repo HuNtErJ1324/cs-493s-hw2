@@ -4,7 +4,6 @@
 **Due: Wednesday, June 11th at 11:59pm**
 ### Authors: Justin Chae, Thomas Lilly, Johan Lindqvist, Yehchan Yoo
 
-
 ## Running this submission
 
 ### Training (1.1)
@@ -15,10 +14,22 @@ The model can be trained with `python train.py`. The default call creates and tr
 
 Inference can be run with the command `python inference.py`. The default call prints the sampled sentences directly to the terminal using the mod dataset and the model created by the training command. This command also supports the `-h` flag, for information about the parameters for the inference. 
 
-
 ### Sanity Check (1.5)
 
-The sanity check is located in the sanity_checks.ipynb notebook.
+The sanity check is located in the `sanity_checks.ipynb` notebook.
+
+### Data Generation (2.1)
+
+The data generation code for Part 2 is contained in `data_generation.py` inside the `part2` directory. The code not only generates data, but also splits the generated data into train, validation, and test sets. The data generation process can be run from the root of the repository with command `cd part2 && python data_generation.py`.
+
+### Warm-Up (2.2)
+
+To perform warm-up addition and subtraction experiments and get the relevant outputs, run
+```
+$ python warmup.py && python visualize_warmup.py
+```
+
+This command will not only perform the warm-up experiments but also output the relevant graphs from running this process.
 
 ### Grokking (2.3)
 
