@@ -21,7 +21,7 @@ for i in range(1, 4+1):
   parser = argparse.ArgumentParser()
   config = parser.parse_args([])
 
-  grok_dir = "ablations"
+  grok_dir = "ablation"
 
   # Setup
   args = {
