@@ -73,7 +73,7 @@ def train_one_epoch(model, data, optimizer, config, val_data=None):
         loss.backward()
         optimizer.step()
 
-        pbar.set_postfix(loss=losses[-1], acc=acc[-1])
+        pbar.set_postfix(loss=f"{losses[-1]:.3f}", acc=f"{acc[-1]:.3f}")
 
         if config.eval_every and (i + 1) % config.eval_every == 0:
             val_result = validate(model, val_data, config)
@@ -91,10 +91,10 @@ def validate(model, val_data, config):
     acc = []
     model.eval()
 
-    pbar = tqdm(val_data, desc="Validation")
+    # pbar = tqdm(val_data, desc="Validation")
     device = next(model.parameters()).device
     with torch.no_grad():
-        for batch, mask, lab, lab_mask in pbar:
+        for batch, mask, lab, lab_mask in val_data:
             batch = batch.to(device)
             mask = build_causal_pad_mask(mask).to(device)
             lab = lab.to(config.device)
@@ -105,7 +105,7 @@ def validate(model, val_data, config):
             losses.append(loss.item())
             acc.append(compute_accuracy(lab, lab_mask, pred_logits).item())
 
-            pbar.set_postfix(loss=losses[-1], acc=acc[-1])
+            # pbar.set_postfix(loss=losses[-1], acc=acc[-1])
     return losses, acc
 
 

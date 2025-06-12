@@ -46,7 +46,7 @@ class Tokenizer:
         return sentences
 
 
-def load_mod_data(tokenizer, data_path="part2/", p_filter: Optional[int] = None, op_filter: Optional[str] = None):
+def load_mod_data(tokenizer, data_path="part2/old_", p_filter: Optional[int] = None, op_filter: Optional[str] = None):
     # Read files
     train = pd.read_csv(data_path + "data_train.csv")
     val = pd.read_csv(data_path + "data_val.csv")

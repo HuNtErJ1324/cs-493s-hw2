@@ -39,8 +39,8 @@ args = {
     "weight_decay": "1e-1",
     "batch_size": "512",
     'exp_name': "grok",
-    "eval_every": "1000",
-    "num_steps": "1_000_000",
+    "eval_every": "10",
+    "num_steps": "100",
 }
 
 if cfg.run_opt == 1:
@@ -76,16 +76,17 @@ print("Train done")
 train.test_model(gpt, test_loader, config)
 
 # Save trained model,configs and losses
-with open(f"{grok_dir}/{config.exp_name}_config_opt{cfg.run_opt}.json", "w") as f:
-    json.dump(vars(config), f, indent=4)
+# with open(f"{grok_dir}/{config.exp_name}_config_opt{cfg.run_opt}.json", "w") as f:
+#     json.dump(vars(config), f, indent=4)
 
-torch.save(gpt.state_dict(), f"{grok_dir}/{config.exp_name}_opt{cfg.run_opt}.pth")
+# torch.save(gpt.state_dict(), f"{grok_dir}/{config.exp_name}_opt{cfg.run_opt}.pth")
 
-with open(f"{grok_dir}/{config.exp_name}_losses_opt{cfg.run_opt}.json", "w") as f:
-    json.dump({"train_losses": train_losses[0], "val_losses": val_losses}, f)
+# with open(f"{grok_dir}/{config.exp_name}_losses_opt{cfg.run_opt}.json", "w") as f:
+#     json.dump({"train_losses": train_losses[0], "val_losses": val_losses}, f)
 
 
-np.save(f"{grok_dir}/grok_train_losses_opt{cfg.run_opt}", train_losses[0])
-np.save(f"{grok_dir}/grok_train_acc_opt{cfg.run_opt}", train_acc[0])
-np.save(f"{grok_dir}/grok_val_losses_opt{cfg.run_opt}", val_losses[0])
-np.save(f"{grok_dir}/grok_val_acc_opt{cfg.run_opt}", val_acc[0])
+# np.save(f"{grok_dir}/grok_train_losses_opt{cfg.run_opt}", train_losses[0])
+# np.save(f"{grok_dir}/grok_train_acc_opt{cfg.run_opt}", train_acc[0])
+# np.save(f"{grok_dir}/grok_val_losses_opt{cfg.run_opt}", val_losses[0])
+va = np.load(f"grokking/runs/4/grok_val_acc_opt{cfg.run_opt}.npy")
+np.save(f"{grok_dir}/grok_val_acc_opt{cfg.run_opt}", np.concatenate((val_acc[0], va)))
