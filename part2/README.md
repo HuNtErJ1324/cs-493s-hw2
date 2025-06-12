@@ -6,7 +6,7 @@ For Part 2.1, data of the form "a+b=c mod p", "a-b=c mod p" and "a/b=c mod p" wa
  - `p`: Set value for p (97 or 113)
  - `o`: Operator (addition (+), subtraction (-), or division (/))
 
-**Here, we assume** `a` **is between 1 and 10^5** based on our interpretation of the inequality `0 <= a,b <= p` in the instructions as `(0 <= a) && (b <= p)` with `a` just needing to be nonnegative.
+**Here, we assume** `a` **is between 0 and 10^5** based on our interpretation of the inequality `0 <= a,b <= p` in the instructions as `(0 <= a) && (b <= p)` with `a` just needing to be nonnegative.
  
 The DataFrame first constructed all possible combinations of values from the following:
 
@@ -17,7 +17,7 @@ The DataFrame first constructed all possible combinations of values from the fol
  
 From here, the resulting value from operation a o b (mod p) was calculated for each combination and added to column `c`.
 
-In addition, rows that involved divison by zero were removed at the end, and all the columns were converted to string format for use with the Transformer model.
+In addition, rows that involved division by zero were removed at the end, and all the columns were converted to string format for use with the Transformer model.
 
 The combination construction and all the calculations were done fastly and efficiently using NumPy.
 
