@@ -6,6 +6,8 @@
 
 ## Running this submission
 
+_Note:_ In the `new_grokking` branch, we generated data in (2.1) by assuming `0 <= a <= p` with `p = 97`. See the `part2` directory and/or the report for more.
+
 ### Training (1.1)
 
 The model can be trained with `python train.py`. The default call creates and trains a model on the mod dataset from part 2 using the default nanoGPT configs. The file itself has a large number of different parameters which may be set to customize the training. Running the command with the flag `-h` produces a output with more information about the arguments. 
