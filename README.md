@@ -6,7 +6,7 @@
 
 ## Running this submission
 
-_Note:_ In the `new_grokking` branch, we generated data in (2.1) by assuming `0 <= a <= p` with `p = 97`. See the `part2` directory and/or the report for more.
+_Note:_ In the `new_grokking` branch, we generated data in (2.1) by assuming `0 <= a <= p`. See the `part2` directory and/or the report for more.
 
 ### Training (1.1)
 
