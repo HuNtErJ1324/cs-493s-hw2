@@ -75,7 +75,18 @@ def __main__(args: list = None):
         infer_configs.num_samples, infer_configs.seq_len, dtype=torch.long
     )
     if infer_configs.data_path: # read seed data from file, expects same format as the mod files
+        if config.mod != "all":
+            p_filter = int(config.mod)
+        if config.math_op != "all":
+            op_filter = config.math_op
         test = pd.read_csv(infer_configs.data_path)
+        if p_filter:
+            print(f"Filtering dataset for p={p_filter}")
+            test = test[test["p"] == p_filter].reset_index(drop=True)
+
+        if op_filter:
+            print(f"Filtering dataset for op={op_filter}")
+            test = test[test["o"] == op_filter].reset_index(drop=True)
         convert_equation_to_str(test)
         test_questions, _ = tokenizer.tokenize(test["q_str"])
         samples = torch.from_numpy(test_questions[:infer_configs.num_samples])
