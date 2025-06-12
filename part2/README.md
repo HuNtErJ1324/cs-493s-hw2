@@ -6,7 +6,7 @@ For Part 2.1, data of the form "a+b=c mod p", "a-b=c mod p" and "a/b=c mod p" wa
  - `p`: Set value for p (97 or 113)
  - `o`: Operator (addition (+), subtraction (-), or division (/))
 
-**Here, we assume** `a` **is between 1 and p** based on our interpretation of the inequality 0 <= a,b <= p in the instructions as (0 <= a <= p) && (0 <= b <= p).
+**Here, we assume** `a` **is between 0 and p** based on our interpretation of the inequality 0 <= a,b <= p in the instructions as (0 <= a <= p) && (0 <= b <= p).
  
 The DataFrame first constructed all possible combinations of values from the following:
 
