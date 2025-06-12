@@ -1,8 +1,52 @@
 # Homework #2
 ## CSE 493S/599S: Advanced Machine Learning
 ### Prof. Sewoong Oh
-**Due: Tuesday, June 10th at 11:59pm**
+**Due: Wednesday, June 11th at 11:59pm**
+### Authors: Justin Chae, Thomas Lilly, Johan Lindqvist, Yehchan Yoo
 
+
+## Running this submission
+
+### Training (1.1)
+
+The model can be trained with `python train.py`. The default call creates and trains a model on the mod dataset from part 2 using the default nanoGPT configs. The file itself has a large number of different parameters which may be set to customize the training. Running the command with the flag `-h` produces a output with more information about the arguments. 
+
+### Inference (1.2)
+
+Inference can be run with the command `python inference.py`. The default call prints the sampled sentences directly to the terminal using the mod dataset and the model created by the training command. This command also supports the `-h` flag, for information about the parameters for the inference. 
+
+
+### Sanity Check (1.5)
+
+The sanity check is located in the sanity_checks.ipynb notebook.
+
+### Grokking (2.3)
+
+To train a model which reproduces the plots from subplot (a) in the report, run
+```
+$ python grok.py
+```
+This command will output a json configuration file `grok.json` which describes the parameters of the training run and a `grok.pth` file which can be loaded for inference in `inference.py`. The report has more detailed instructions for `inference.py`. It is designed as a command line utility so you can use the `--help` option for more details. 
+
+Example inference command
+```
+$ python inference.py --model_name /path/to/grok.pth \
+                      --out_file /path/to/out_file.txt
+                      
+```
+
+### Ablation (2.4)
+
+To replicate the ablation study we did, run
+```
+$ python ablations.py
+```
+
+Similar to `grok.py`, this command will output for each optimizer method a `json` configuration file, a `pth` file for inference, and `npy` files with the validation and train errors and losses. All output files are in  the `ablation` directory.
+
+In addition to the output files, there are also plots in `.png` file format generated to summarize the results using the code contained in `visualization_notebook.ipynb`. 
+
+---
 ## Instructions
 - Please submit this homework to Gradescope.
 - Submit the code, as well as a report containing the plots and discussion. Also include a README, along with instructions to run your code.

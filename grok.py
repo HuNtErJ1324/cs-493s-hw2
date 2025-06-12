@@ -19,7 +19,7 @@ def set_seed(seed: int = 42):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--run_opt", type=int, choices=[1, 2, 3], default=1)
+parser.add_argument("--run_opt", type=int, choices=[1, 2, 3], default=0)
 cfg = parser.parse_args()
 
 grok_dir = "grokking"
